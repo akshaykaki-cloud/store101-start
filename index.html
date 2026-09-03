@@ -217,6 +217,29 @@
   };
   ['name','email'].forEach(function(id){ $(id).addEventListener('input', function(){ $('contactErr').classList.remove('show'); }); });
 
+  var LEAD_ENDPOINT = 'https://formspree.io/f/mljenvon';
+
+  function sendLead(match, summary){
+    // fire-and-forget: email every completed questionnaire to Store101
+    try {
+      fetch(LEAD_ENDPOINT, {
+        method:'POST',
+        headers:{ 'content-type':'application/json', 'accept':'application/json' },
+        body: JSON.stringify({
+          name: answers.name,
+          email: answers.email,
+          phone: answers.phone || '(not given)',
+          business_type: answers.type,
+          business_size: answers.size,
+          their_problem: answers.struggle,
+          ai_match: match || '(unrouted)',
+          ai_summary: summary || '',
+          _subject: 'New Store101 lead: ' + (answers.name || 'someone') + ' — ' + (match || 'enquiry')
+        })
+      }).catch(function(){});
+    } catch(e){}
+  }
+
   function route(){
     fetch('/api/route', {
       method:'POST', headers:{'content-type':'application/json'},
@@ -225,9 +248,11 @@
     .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
     .then(function(res){
       if(!res.ok || !res.j || res.j.error){ throw new Error((res.j && res.j.error) || 'Something went wrong.'); }
+      sendLead(res.j.match, res.j.summary);   // capture the lead automatically
       renderResult(res.j);
     })
     .catch(function(err){
+      sendLead('error', '(AI routing failed; raw struggle captured)');  // still capture even if routing fails
       $('thinking').style.display='none';
       var w=$('resultWrap'); w.style.display='block';
       w.innerHTML = '<div class="result-card"><div class="result-tag">Let\'s talk</div>'+
