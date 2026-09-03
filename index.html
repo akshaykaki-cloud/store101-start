@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Find your AI tool — Store101</title>
+<meta name="description" content="Tell us what's slowing your small business down, and we'll point you to the right AI tool — or build you a custom one." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070912; --panel:#0E1220; --ink:#EDF0FA; --slate:#9AA4C0; --faint:#69728F;
+    --line:rgba(150,170,255,.14); --blue:#4E7BFF; --blue-lt:#8FB0FF; --blue-dk:#2A46C4;
+    --disp:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'Space Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:
+      radial-gradient(60% 45% at 50% 0%, rgba(78,123,255,.16), transparent 70%),
+      var(--bg);
+    color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;min-height:100vh}
+  button{font-family:inherit;cursor:pointer}
+  ::selection{background:var(--blue);color:#fff}
+  .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 22px}
+
+  header{padding:22px 0}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--blue-lt);box-shadow:0 0 14px 2px rgba(143,176,255,.7)}
+
+  main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:10px 0 50px}
+
+  /* progress */
+  .prog{display:flex;gap:6px;margin-bottom:26px}
+  .prog span{height:3px;flex:1;background:var(--line);border-radius:3px;overflow:hidden;position:relative}
+  .prog span.on::after{content:"";position:absolute;inset:0;background:var(--blue);border-radius:3px}
+
+  .step{display:none}
+  .step.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  h1{font-family:var(--disp);font-weight:600;font-size:clamp(26px,5vw,38px);line-height:1.12;letter-spacing:-.02em;margin:0 0 12px}
+  .lede{color:var(--slate);font-size:16.5px;margin:0 0 26px;max-width:520px}
+  .q{font-family:var(--disp);font-weight:600;font-size:20px;margin:0 0 4px}
+  .q-help{color:var(--faint);font-size:13.5px;margin:0 0 18px}
+
+  .opts{display:flex;flex-wrap:wrap;gap:10px}
+  .opt{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:13px 18px;font-size:15px;font-weight:500;transition:all .14s ease}
+  .opt:hover{border-color:var(--blue);transform:translateY(-1px)}
+  .opt.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+  textarea,input{width:100%;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);border-radius:12px;color:var(--ink);font-family:var(--body);font-size:15.5px;padding:14px 16px;outline:none;transition:border-color .15s ease}
+  textarea:focus,input:focus{border-color:var(--blue)}
+  textarea{resize:vertical;min-height:130px;line-height:1.55}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--slate);margin-bottom:7px}
+  .err{color:#FF8B8B;font-size:13px;margin-top:8px;display:none}
+  .err.show{display:block}
+
+  .row{display:flex;gap:12px;align-items:center;margin-top:26px}
+  .btn{border-radius:12px;font-family:var(--disp);font-weight:600;font-size:15.5px;padding:14px 26px;border:1px solid transparent;transition:transform .14s ease,filter .14s ease,border-color .14s ease}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .btn-primary:disabled{opacity:.5;cursor:default;transform:none;filter:none}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--slate)}
+  .btn-ghost:hover{border-color:var(--slate);color:var(--ink)}
+  .spacer{flex:1}
+  .back{font-family:var(--mono);font-size:12px;color:var(--faint);background:none;border:none;padding:6px 0}
+  .back:hover{color:var(--slate)}
+
+  /* thinking */
+  .thinking{text-align:center;padding:40px 0}
+  .thinking .dots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue-lt);margin:0 3px;animation:bl 1.2s infinite}
+  .thinking .dots span:nth-child(2){animation-delay:.2s}.thinking .dots span:nth-child(3){animation-delay:.4s}
+  @keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .thinking p{color:var(--slate);margin-top:16px;font-size:14.5px}
+
+  /* result */
+  .result-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:28px 26px;margin-top:6px}
+  .result-tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-lt);margin-bottom:14px}
+  .result-card h2{font-family:var(--disp);font-weight:700;font-size:28px;letter-spacing:-.02em;margin:0 0 6px}
+  .result-card .rblurb{color:var(--slate);font-size:15px;margin:0 0 16px}
+  .result-why{background:rgba(78,123,255,.08);border:1px solid rgba(78,123,255,.2);border-radius:12px;padding:14px 16px;font-size:14.5px;color:var(--ink);margin-bottom:22px}
+  .result-cta{display:inline-block;background:var(--blue);color:#fff;border-radius:12px;font-family:var(--disp);font-weight:600;font-size:15.5px;padding:14px 26px;text-decoration:none;transition:transform .14s ease,filter .14s ease}
+  .result-cta:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .restart{display:block;text-align:center;margin-top:22px;font-family:var(--mono);font-size:12px;color:var(--faint);background:none;border:none;width:100%}
+  .restart:hover{color:var(--slate)}
+
+  footer{padding:20px 0;text-align:center;font-family:var(--mono);font-size:11px;color:var(--faint)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap brand"><span class="dot"></span>Store101</div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="prog" id="prog"><span></span><span></span><span></span><span></span></div>
+
+    <!-- STEP 0 — welcome -->
+    <section class="step active" data-step="0">
+      <h1>Let's find the right AI tool for your business.</h1>
+      <p class="lede">Answer a few quick questions about what's slowing you down, and we'll point you to a tool that fixes it — or build you a custom one. Takes under a minute.</p>
+      <div class="row">
+        <button class="btn btn-primary" data-next>Get started →</button>
+      </div>
+    </section>
+
+    <!-- STEP 1 — business type -->
+    <section class="step" data-step="1">
+      <p class="q">What kind of business do you run?</p>
+      <p class="q-help">Pick the closest.</p>
+      <div class="opts" id="qType"></div>
+      <div class="row"><button class="back" data-back>← Back</button><span class="spacer"></span></div>
+    </section>
+
+    <!-- STEP 2 — size -->
+    <section class="step" data-step="2">
+      <p class="q">How big is your team?</p>
+      <p class="q-help">Just you, or a few hands?</p>
+      <div class="opts" id="qSize"></div>
+      <div class="row"><button class="back" data-back>← Back</button><span class="spacer"></span></div>
+    </section>
+
+    <!-- STEP 3 — struggle -->
+    <section class="step" data-step="3">
+      <p class="q">What's the biggest thing slowing your business down right now?</p>
+      <p class="q-help">In your own words — the more real, the better we can help.</p>
+      <textarea id="struggle" placeholder="e.g. I waste hours every week checking what's in stock… / I have no idea which products actually make money… / I never have time to market the shop…"></textarea>
+      <div class="err" id="struggleErr">Tell us a little about what's slowing you down.</div>
+      <div class="row"><button class="back" data-back>← Back</button><span class="spacer"></span><button class="btn btn-primary" data-next>Continue →</button></div>
+    </section>
+
+    <!-- STEP 4 — contact -->
+    <section class="step" data-step="4">
+      <p class="q">Where should we send your recommendation?</p>
+      <p class="q-help">We'll show it right away — and follow up with how we can help.</p>
+      <div class="field"><label for="name">Your name</label><input id="name" type="text" placeholder="Jane Smith" /></div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="jane@business.com" /></div>
+      <div class="field"><label for="phone">Phone (optional)</label><input id="phone" type="tel" placeholder="(555) 123-4567" /></div>
+      <div class="err" id="contactErr">Please enter your name and a valid email.</div>
+      <div class="row"><button class="back" data-back>← Back</button><span class="spacer"></span><button class="btn btn-primary" id="finishBtn" data-finish>See my recommendation →</button></div>
+    </section>
+
+    <!-- STEP 5 — thinking / result -->
+    <section class="step" data-step="5">
+      <div class="thinking" id="thinking">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <p>Reading your situation and finding the best fit…</p>
+      </div>
+      <div id="resultWrap" style="display:none"></div>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap">Store101 — AI for Small Business</div></footer>
+
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var progEls = $('prog').children;
+  var current = 0;
+
+  var answers = { type:"", size:"", struggle:"", name:"", email:"", phone:"" };
+
+  var TYPES = ["Retail / shop", "Services", "Online store", "Food / hospitality", "Other"];
+  var SIZES = ["Just me", "2–5 people", "6–20 people", "20+"];
+
+  function renderOpts(container, list, key, autoAdvance){
+    var c = $(container);
+    c.innerHTML = list.map(function(o){ return '<button class="opt" data-v="'+esc(o)+'">'+esc(o)+'</button>'; }).join("");
+    Array.prototype.forEach.call(c.querySelectorAll('.opt'), function(b){
+      b.onclick = function(){
+        Array.prototype.forEach.call(c.querySelectorAll('.opt'), function(x){ x.classList.remove('on'); });
+        b.classList.add('on'); answers[key] = b.getAttribute('data-v');
+        if(autoAdvance) setTimeout(next, 220);
+      };
+    });
+  }
+  renderOpts('qType', TYPES, 'type', true);
+  renderOpts('qSize', SIZES, 'size', true);
+
+  function show(i){
+    // progress: steps 1..4 map to the 4 bars
+    for(var k=0;k<progEls.length;k++){ progEls[k].classList.toggle('on', i>=1 && i>=(k+1)); }
+    steps.forEach(function(s){ s.classList.toggle('active', Number(s.getAttribute('data-step'))===i); });
+    current = i; window.scrollTo(0,0);
+  }
+  function next(){
+    if(current===3){ // validate struggle
+      answers.struggle = $('struggle').value.trim();
+      if(answers.struggle.length < 3){ $('struggleErr').classList.add('show'); return; }
+      $('struggleErr').classList.remove('show');
+    }
+    show(Math.min(current+1, steps.length-1));
+  }
+  function back(){ show(Math.max(current-1, 0)); }
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-next]'), function(b){ b.onclick = next; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-back]'), function(b){ b.onclick = back; });
+
+  $('struggle').addEventListener('input', function(){ $('struggleErr').classList.remove('show'); });
+
+  // finish -> validate contact -> call AI router
+  $('finishBtn').onclick = function(){
+    answers.name = $('name').value.trim();
+    answers.email = $('email').value.trim();
+    answers.phone = $('phone').value.trim();
+    var okEmail = /.+@.+\..+/.test(answers.email);
+    if(!answers.name || !okEmail){ $('contactErr').classList.add('show'); return; }
+    $('contactErr').classList.remove('show');
+    show(5);
+    route();
+  };
+  ['name','email'].forEach(function(id){ $(id).addEventListener('input', function(){ $('contactErr').classList.remove('show'); }); });
+
+  function route(){
+    fetch('/api/route', {
+      method:'POST', headers:{'content-type':'application/json'},
+      body: JSON.stringify(answers)
+    })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
+    .then(function(res){
+      if(!res.ok || !res.j || res.j.error){ throw new Error((res.j && res.j.error) || 'Something went wrong.'); }
+      renderResult(res.j);
+    })
+    .catch(function(err){
+      $('thinking').style.display='none';
+      var w=$('resultWrap'); w.style.display='block';
+      w.innerHTML = '<div class="result-card"><div class="result-tag">Let\'s talk</div>'+
+        '<h2>We\'ll be in touch.</h2>'+
+        '<p class="rblurb">Thanks '+esc(answers.name||'')+' — we\'ve got what you shared and we\'ll reach out about the best way to help.</p>'+
+        '<a class="result-cta" href="mailto:akshayk.inbox@gmail.com?subject=Store101%20enquiry&body='+encodeURIComponent('Name: '+answers.name+'\nEmail: '+answers.email+'\nPhone: '+answers.phone+'\nBusiness: '+answers.type+', '+answers.size+'\n\nStruggle: '+answers.struggle)+'">Email us directly</a></div>'+
+        '<button class="restart" onclick="location.reload()">Start over</button>';
+    });
+  }
+
+  function renderResult(r){
+    $('thinking').style.display='none';
+    var w=$('resultWrap'); w.style.display='block';
+    var lead = encodeURIComponent('New Store101 lead\n\nName: '+answers.name+'\nEmail: '+answers.email+'\nPhone: '+(answers.phone||'-')+'\nBusiness: '+answers.type+' · '+answers.size+'\n\nStruggle (their words): '+answers.struggle+'\n\nAI match: '+(r.match||'')+'\nAI summary: '+(r.summary||''));
+
+    if(r.match && r.match !== 'custom' && r.tool){
+      w.innerHTML =
+        '<div class="result-card">'+
+          '<div class="result-tag">Your match</div>'+
+          '<h2>'+esc(r.tool.name)+'</h2>'+
+          '<p class="rblurb">'+esc(r.tool.blurb)+'</p>'+
+          '<div class="result-why">'+esc(r.reason||'')+'</div>'+
+          '<a class="result-cta" href="'+esc(r.tool.url)+'" target="_blank" rel="noopener noreferrer">Open '+esc(r.tool.name)+' →</a>'+
+        '</div>'+
+        '<button class="restart" onclick="location.reload()">Answer again</button>';
+    } else {
+      w.innerHTML =
+        '<div class="result-card">'+
+          '<div class="result-tag">Custom build</div>'+
+          '<h2>We can build this for you.</h2>'+
+          '<p class="rblurb">'+esc(r.reason || "What you're dealing with is a great fit for a custom AI tool — we'd build it around your business and your data.")+'</p>'+
+          '<a class="result-cta" href="mailto:akshayk.inbox@gmail.com?subject=Store101%20-%20custom%20build&body='+lead+'">Let\'s talk about it →</a>'+
+        '</div>'+
+        '<button class="restart" onclick="location.reload()">Answer again</button>';
+    }
+  }
+
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+</script>
+</body>
+</html>
